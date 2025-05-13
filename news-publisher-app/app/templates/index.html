@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<form id="ratingForm" method="POST" class="bg-gray-100 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="mb-4">
+        <label for="url" class="block text-gray-700 text-sm font-bold mb-2">URL:</label>
+        <input type="url" id="url" name="url" placeholder="Enter a URL" required
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="mb-4">
+        <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category:</label>
+        <select id="category" name="category" required
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <option value="news">News</option>
+            <option value="blog">Blog</option>
+            <option value="social">Social Media</option>
+            <option value="shopping">Shopping</option>
+            <option value="other">Other</option>
+        </select>
+    </div>
+    <div class="mb-4">
+        <label for="reason" class="block text-gray-700 text-sm font-bold mb-2">Reason to Report:</label>
+        <div id="reason" class="flex flex-col space-y-2">
+            <label>
+                <input type="radio" name="reason" value="spam" required>
+                Spam
+            </label>
+            <label>
+                <input type="radio" name="reason" value="misleading" required>
+                Misleading Information
+            </label>
+            <label>
+                <input type="radio" name="reason" value="offensive" required>
+                Offensive Content
+            </label>
+            <label>
+                <input type="radio" name="reason" value="other" required>
+                Other
+            </label>
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="comment" class="block text-gray-700 text-sm font-bold mb-2">Comment:</label>
+        <textarea id="comment" name="comment" rows="4" placeholder="Add a comment"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+    </div>
+    <div class="flex items-center justify-between">
+        <button type="submit"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Submit
+        </button>
+    </div>
+</form>
+
+<!-- List of URLs -->
+<div class="mt-8">
+    <h2 class="text-xl font-bold mb-4">Submitted URLs</h2>
+    <ul class="list-disc pl-5">
+        {% for url, submissions in grouped_submissions.items() %}
+        <li>
+            <a href="{{ url_for('details', url=url) }}" class="text-blue-500 hover:underline">
+                {{ url }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
