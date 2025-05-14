@@ -3,68 +3,84 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<form id="ratingForm" method="POST" class="bg-gray-100 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-    <div class="mb-4">
-        <label for="url" class="block text-gray-700 text-sm font-bold mb-2">URL:</label>
-        <input type="url" id="url" name="url" placeholder="Enter a URL" required
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+<!-- Full-Width Hero Section -->
+<section class="bg-violetSky-500 text-white py-10">
+    <div class="container mx-auto text-center">
+        <h1 class="text-4xl font-bold mb-4">Welcome to News Publisher</h1>
+        <p class="text-lg">Report, explore, and analyze the latest sites with ease.</p>
     </div>
-    <div class="mb-4">
-        <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category:</label>
-        <select id="category" name="category" required
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            <option value="news">News</option>
-            <option value="blog">Blog</option>
-            <option value="social">Social Media</option>
-            <option value="shopping">Shopping</option>
-            <option value="other">Other</option>
-        </select>
-    </div>
-    <div class="mb-4">
-        <label for="reason" class="block text-gray-700 text-sm font-bold mb-2">Reason to Report:</label>
-        <div id="reason" class="flex flex-col space-y-2">
-            <label>
-                <input type="radio" name="reason" value="spam" required>
-                Spam
-            </label>
-            <label>
-                <input type="radio" name="reason" value="misleading" required>
-                Misleading Information
-            </label>
-            <label>
-                <input type="radio" name="reason" value="offensive" required>
-                Offensive Content
-            </label>
-            <label>
-                <input type="radio" name="reason" value="other" required>
-                Other
-            </label>
-        </div>
-    </div>
-    <div class="mb-4">
-        <label for="comment" class="block text-gray-700 text-sm font-bold mb-2">Comment:</label>
-        <textarea id="comment" name="comment" rows="4" placeholder="Add a comment"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-    </div>
-    <div class="flex items-center justify-between">
-        <button type="submit"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Submit
-        </button>
-    </div>
-</form>
+</section>
 
-<!-- List of URLs -->
-<div class="mt-8">
-    <h2 class="text-xl font-bold mb-4">Submitted URLs</h2>
-    <ul class="list-disc pl-5">
-        {% for url, submissions in grouped_submissions.items() %}
-        <li>
-            <a href="{{ url_for('details', url=url) }}" class="text-blue-500 hover:underline">
-                {{ url }}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
+<!-- Cards Section -->
+<section class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+    <!-- Left Card: Form to Report a Site -->
+    <div class="bg-white shadow-md rounded p-6">
+        <h2 class="text-xl font-bold mb-4">Report a Site</h2>
+        <form id="reportForm" method="POST" class="space-y-4">
+            <!-- URL Input -->
+            <div>
+                <label for="url" class="block text-gray-700 font-bold mb-2">URL:</label>
+                <input type="url" id="url" name="url" placeholder="Enter a URL" required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <!-- Category Dropdown -->
+            <div>
+                <label for="category" class="block text-gray-700 font-bold mb-2">Category:</label>
+                <select id="category" name="category" required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="news">News</option>
+                    <option value="blog">Blog</option>
+                    <option value="social">Social Media</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <!-- Reason Textarea -->
+            <div>
+                <label for="reason" class="block text-gray-700 font-bold mb-2">Reason to Report:</label>
+                <textarea id="reason" name="reason" rows="3" placeholder="Reason for reporting"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <!-- Comment Textarea -->
+            <div>
+                <label for="comment" class="block text-gray-700 font-bold mb-2">Comment:</label>
+                <textarea id="comment" name="comment" rows="3" placeholder="Additional comments (optional)"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <!-- Submit Button -->
+            <button type="submit"
+                class="bg-sunset-500 hover:bg-sunset-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Submit
+            </button>
+        </form>
+    </div>
+
+    <!-- Center Card: Last 10 Sites Added -->
+    <div class="bg-white shadow-md rounded p-6">
+        <h2 class="text-xl font-bold mb-4">Last 10 Sites Added</h2>
+        <ul class="list-disc pl-5">
+            {% for site in last_ten_sites %}
+            <li>
+                <a href="{{ url_for('details', url=site.url) }}" class="text-tealGlow-500 hover:underline">
+                    {{ site.url }}
+                </a> - {{ site.timestamp }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Right Card: Sites Ordered by Number of Reports -->
+    <div class="bg-white shadow-md rounded p-6">
+        <h2 class="text-xl font-bold mb-4">Most Reported Sites</h2>
+        <ul class="list-disc pl-5">
+            {% for site in most_reported_sites %}
+            <li>
+                <a href="{{ url_for('details', url=site.url) }}" class="text-hotPink-500 hover:underline">
+                    {{ site.url }}
+                </a> - {{ site.report_count }} reports
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
 {% endblock %}

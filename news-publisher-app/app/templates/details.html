@@ -4,6 +4,8 @@
 
 {% block content %}
 <h2 class="text-xl font-bold mb-4">Details for {{ url }}</h2>
+
+<!-- List all submissions -->
 <ul class="list-disc pl-5">
     {% for submission in submissions %}
     <li class="mb-4">
@@ -11,12 +13,9 @@
         <p><strong>Reason:</strong> {{ submission.reason }}</p>
         <p><strong>Comment:</strong> {{ submission.comment }}</p>
         <p><strong>Date:</strong> {{ submission.timestamp }}</p>
-        {% if submission.screenshot %}
-        <p><strong>Screenshot:</strong></p>
-        <img src="{{ submission.screenshot }}" alt="Screenshot of {{ url }}" class="border rounded">
-        {% endif %}
     </li>
     {% endfor %}
 </ul>
+
 <a href="{{ url_for('home') }}" class="text-blue-500 hover:underline">Back to Home</a>
 {% endblock %}

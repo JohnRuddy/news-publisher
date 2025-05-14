@@ -1,20 +1,14 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import redis
 import requests
-from urllib.parse import urlparse, urlunparse
-import subprocess
+from urllib.parse import urlparse
 import os
-import imgkit
 
 app = Flask(__name__)
 
 # Connect to Redis
 redis_client = redis.StrictRedis(host='localhost', port=6379, decode_responses=True)
-
-# Directory to save screenshots
-SCREENSHOT_DIR = "screenshots"
-os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
 @app.context_processor
 def inject_current_year():
@@ -36,17 +30,6 @@ def is_valid_url(url):
     except requests.RequestException:
         return False
 
-def capture_screenshot(url, submission_id):
-    """Capture a screenshot of the URL's root page using imgkit."""
-    screenshot_path = os.path.join(SCREENSHOT_DIR, f"{submission_id}.png")
-    try:
-        imgkit.from_url(url, screenshot_path)
-        return screenshot_path
-    except Exception as e:
-        print(f"Error capturing screenshot: {e}")
-        # Return an empty string or a placeholder value if the screenshot fails
-        return ""
-
 @app.route('/', methods=['GET', 'POST'])
 def home():
     """Render the home page and handle form submission."""
@@ -54,7 +37,7 @@ def home():
         url = request.form['url']
         category = request.form['category']
         reason = request.form['reason']
-        comment = request.form['comment']
+        comment = request.form.get('comment', '')
 
         # Normalize and validate the URL
         url = normalize_url(url)
@@ -63,13 +46,11 @@ def home():
 
         # Save data to Redis
         submission_id = redis_client.incr('submission_id')  # Auto-increment ID
-        screenshot_path = capture_screenshot(url, submission_id) or ""  # Ensure a valid string
         redis_client.hmset(f'submission:{submission_id}', {
             'url': url,
             'category': category,
             'reason': reason,
             'comment': comment,
-            'screenshot': screenshot_path,
             'timestamp': datetime.now().isoformat()
         })
         
@@ -81,15 +62,21 @@ def home():
         redis_client.hgetall(key) for key in submission_keys
     ]
 
-    # Group submissions by URL
-    grouped_submissions = {}
+    # Get the last 10 sites added
+    last_ten_sites = sorted(submissions, key=lambda x: x['timestamp'], reverse=True)[:10]
+
+    # Count reports for each site
+    report_counts = {}
     for submission in submissions:
         url = submission['url']
-        if url not in grouped_submissions:
-            grouped_submissions[url] = []
-        grouped_submissions[url].append(submission)
+        report_counts[url] = report_counts.get(url, 0) + 1
 
-    return render_template('index.html', grouped_submissions=grouped_submissions)
+    # Get sites ordered by number of reports
+    most_
+    reported_sites = sorted(report_counts.items(), key=lambda x: x[1], reverse=True)
+    most_reported_sites = [{'url': url, 'report_count': count} for url, count in most_reported_sites]
+
+    return render_template('index.html', last_ten_sites=last_ten_sites, most_reported_sites=most_reported_sites)
 
 @app.route('/details/<path:url>')
 def details(url):
@@ -103,10 +90,7 @@ def details(url):
     # Sort submissions by timestamp (descending)
     submissions.sort(key=lambda x: x['timestamp'], reverse=True)
 
-    # Get the most recent submission's screenshot
-    latest_screenshot = submissions[0]['screenshot'] if submissions and 'screenshot' in submissions[0] else None
-
-    return render_template('details.html', url=url, submissions=submissions, latest_screenshot=latest_screenshot)
+    return render_template('details.html', url=url, submissions=submissions)
 
 if __name__ == '__main__':
     app.run(debug=True)

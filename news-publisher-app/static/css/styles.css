@@ -1,33 +1,104 @@
+/* General body styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #fef1eb; /* Sunset 100 */
+    color: #333333; /* StreetGray 800 */
 }
 
+/* Header styles */
 header {
-    background: #35424a;
+    background: #8444cb; /* VioletSky 500 */
     color: #ffffff;
-    padding: 10px 0;
+    padding: 20px 0;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+header h1 {
     margin: 0;
+    font-size: 2rem;
 }
 
+/* Container styles */
 .container {
     width: 80%;
     margin: auto;
     overflow: hidden;
+    background-color: #ffffff; /* White background for content */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Footer styles */
 footer {
-    background: #35424a;
+    background: #4bbf98; /* PalmGreen 500 */
     color: #ffffff;
     text-align: center;
     padding: 10px 0;
     position: relative;
     bottom: 0;
     width: 100%;
+}
+
+/* Button styles */
+button {
+    background-color: #fc7d33; /* Sunset 500 */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #d45d23; /* Sunset 600 */
+}
+
+/* Form input styles */
+input[type="text"],
+input[type="url"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #d6d6d6; /* StreetGray 200 */
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #28cbc0; /* TealGlow 500 */
+    outline: none;
+    box-shadow: 0 0 5px rgba(40, 203, 192, 0.5);
+}
+
+/* Link styles */
+a {
+    color: #ff1a75; /* HotPink 500 */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #cc145e; /* HotPink 600 */
+}
+
+/* List styles */
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 10px;
 }
